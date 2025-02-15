@@ -75,7 +75,7 @@ void generateRandomSequence(uint8_t* sequence);
 // Calculate array length (C-style)
 #define ARRAYLENGTH(ar) (sizeof(ar) / (sizeof(ar[0])))
 
-// Structure which holds the correct led to lit up and note length NOT IN USE
+// Structure which holds the correct led to lit up and note length
 struct soundItem {
     uint8_t ledColor;
     uint16_t noteLength;
@@ -84,8 +84,6 @@ struct soundItem {
 // GLOBALS
 ////////////////////////////////////////////////////////////////////////////////////////
 
-char sequenceOne[] = { LED_BLUE, LED_GREEN, LED_RED, LED_YELLOW};
-char sequenceTwo[] = { LED_BLUE, LED_GREEN, LED_RED, LED_YELLOW,LED_YELLOW,LED_RED,LED_GREEN,LED_BLUE};
 struct soundItem randomSequenceEasy[4];
 struct soundItem randomSequenceMedium[6];
 struct soundItem randomSequenceHard[8];
@@ -151,6 +149,16 @@ void generateRandomSequence(struct soundItem* sequence, uint8_t arrayLength)
   
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// SUMMARY 
+// Plays as sequence of notes to as mark to successfull round.
+///////////////////////////////////////////////////////////////////////////////////////
+// PARAMETERS
+// None.
+///////////////////////////////////////////////////////////////////////////////////////
+// RETURNS
+// Nothing.
+///////////////////////////////////////////////////////////////////////////////////////
 void playFanfare()
 {
   tone(BUZZER, YELLOW_TONE, 250);
@@ -167,6 +175,16 @@ void playFanfare()
   delay(4000);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// SUMMARY 
+// Plays as sequence of notes (BOMB) to as mark to wrong button press.
+///////////////////////////////////////////////////////////////////////////////////////
+// PARAMETERS
+// None.
+///////////////////////////////////////////////////////////////////////////////////////
+// RETURNS
+// Nothing.
+///////////////////////////////////////////////////////////////////////////////////////
 void playMissSound()
 {
   for(int i= BLUE_TONE; i > 0; i--)
@@ -176,6 +194,16 @@ void playMissSound()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// SUMMARY 
+// Plays as sequence of notes for player to repeat.
+///////////////////////////////////////////////////////////////////////////////////////
+// PARAMETERS
+// Pointer to sequence of soundItems which hold the ledColor (note) and note length.
+///////////////////////////////////////////////////////////////////////////////////////
+// RETURNS
+// Nothing.
+///////////////////////////////////////////////////////////////////////////////////////
 void playSequence(struct soundItem* sequence){
 
   #if DEBUGMODE
@@ -189,69 +217,80 @@ void playSequence(struct soundItem* sequence){
     Serial.print("SoundIndex: ");
     Serial.println(soundIndex);
     #endif
-    if(sequence[soundIndex].ledColor == LED_BLUE)
+    switch(sequence[soundIndex].ledColor)
     {
-      digitalWrite(LED_BLUE, HIGH); // turn the LED on (HIGH is the voltage level)
-      //delay(500);
-      //digitalWrite(LED_BLUE, LOW);
-      tone(BUZZER, BLUE_TONE, sequence[soundIndex].noteLength);
-      delay(sequence[soundIndex].noteLength);
-      digitalWrite(LED_BLUE, LOW);  // turn the LED off by making the voltage LOW
-      delay(500);  
-    }
-    else
-    {
-      digitalWrite(LED_BLUE, LOW);  // turn the LED off by making the voltage LOW
-    }
-  
-    if(sequence[soundIndex].ledColor == LED_GREEN)
-    {
-      digitalWrite(LED_GREEN, HIGH); // turn the LED on (HIGH is the voltage level)
-      //delay(500);
-      //digitalWrite(LED_GREEN, LOW);
-      tone(BUZZER, GREEN_TONE, sequence[soundIndex].noteLength);
-      delay(sequence[soundIndex].noteLength);
-      digitalWrite(LED_GREEN, LOW);
-      delay(500);
-    }
-    else
-    {
-      digitalWrite(LED_GREEN, LOW);  // turn the LED off by making the voltage LOW
-    }
-  
-    if(sequence[soundIndex].ledColor == LED_RED)
-    {
-      digitalWrite(LED_RED, HIGH); // turn the LED on (HIGH is the voltage level)
-      //delay(500);
-      //digitalWrite(LED_RED, LOW);
-      tone(BUZZER, RED_TONE, sequence[soundIndex].noteLength);
-      delay(sequence[soundIndex].noteLength);
-      digitalWrite(LED_RED, LOW);
-      delay(500);
-    }
-    else
-    {
-      digitalWrite(LED_RED, LOW);  // turn the LED off by making the voltage LOW
-    }
-  
-    if(sequence[soundIndex].ledColor == LED_YELLOW)
-    {
-      digitalWrite(LED_YELLOW, HIGH); // turn the LED on (HIGH is the voltage level)
-      //delay(500);
-      //digitalWrite(LED_YELLOW, LOW);
-      tone(BUZZER, YELLOW_TONE, sequence[soundIndex].noteLength);
-      delay(sequence[soundIndex].noteLength);
-      digitalWrite(LED_YELLOW, LOW);
-      delay(500);
-    }
-    else
-    {
-      digitalWrite(LED_YELLOW, LOW);  // turn the LED off by making the voltage LOW
+      case LED_BLUE:
+      {
+        // turn the correct LED on and the rest off. 
+        digitalWrite(LED_BLUE, HIGH); 
+        digitalWrite(LED_GREEN, LOW);
+        digitalWrite(LED_RED, LOW);
+        digitalWrite(LED_YELLOW, LOW);
+        
+        tone(BUZZER, BLUE_TONE, sequence[soundIndex].noteLength);
+        delay(sequence[soundIndex].noteLength);
+        digitalWrite(LED_BLUE, LOW);  // turn the LED off by making the voltage LOW
+        delay(500);
+        break;  
+      } 
+      case LED_GREEN:
+      {
+        // turn the correct LED on and the rest off. 
+        digitalWrite(LED_BLUE, LOW); 
+        digitalWrite(LED_GREEN, HIGH);
+        digitalWrite(LED_RED, LOW);
+        digitalWrite(LED_YELLOW, LOW);
+        
+        tone(BUZZER, GREEN_TONE, sequence[soundIndex].noteLength);
+        delay(sequence[soundIndex].noteLength);
+        digitalWrite(LED_GREEN, LOW);
+        delay(500);
+        break;
+      }
+      case LED_RED:
+      {
+        // turn the correct LED on and the rest off. 
+        digitalWrite(LED_BLUE, LOW); 
+        digitalWrite(LED_GREEN, LOW);
+        digitalWrite(LED_RED, HIGH);
+        digitalWrite(LED_YELLOW, LOW);
+        
+        tone(BUZZER, RED_TONE, sequence[soundIndex].noteLength);
+        delay(sequence[soundIndex].noteLength);
+        digitalWrite(LED_RED, LOW);
+        delay(500);
+        break;
+      }
+      case LED_YELLOW:
+      {
+        // turn the correct LED on and the rest off. 
+        digitalWrite(LED_BLUE, LOW); 
+        digitalWrite(LED_GREEN, LOW);
+        digitalWrite(LED_RED, LOW);
+        digitalWrite(LED_YELLOW, HIGH);
+        
+        tone(BUZZER, YELLOW_TONE, sequence[soundIndex].noteLength);
+        delay(sequence[soundIndex].noteLength);
+        digitalWrite(LED_YELLOW, LOW);
+        delay(500);
+        break;
+      }
     }
   } 
   //delay(500);        
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// SUMMARY 
+// Helper method to ping the blue button press. Press of the blue button means that the
+// player is ready to begin a new round.
+///////////////////////////////////////////////////////////////////////////////////////
+// PARAMETERS
+// None.
+///////////////////////////////////////////////////////////////////////////////////////
+// RETURNS
+// Nothing.
+///////////////////////////////////////////////////////////////////////////////////////
 void waitForButton()
 {
   while(digitalRead(BUTTON_BLUE))
@@ -261,6 +300,16 @@ void waitForButton()
   delay(1000);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// SUMMARY 
+// Checks player's inputs and compares them to correct sequence.
+///////////////////////////////////////////////////////////////////////////////////////
+// PARAMETERS
+// Pointer to correct sequence of soundItems. 
+///////////////////////////////////////////////////////////////////////////////////////
+// RETURNS
+// True if the inputs are correct. False if wrong button has been pressed.
+///////////////////////////////////////////////////////////////////////////////////////
 bool checkPlayerResponse(struct soundItem* sequence)
 {
   for(int sequenceIndex = 0; sequenceIndex < notesToPlay; sequenceIndex++)
@@ -272,101 +321,114 @@ bool checkPlayerResponse(struct soundItem* sequence)
     // Wait for button press
     while(digitalRead(BUTTON_BLUE) && digitalRead(BUTTON_GREEN) && digitalRead(BUTTON_RED) && digitalRead(BUTTON_YELLOW)) {}
     
-    if(sequence[sequenceIndex].ledColor == LED_BLUE)
-    {
-      // Blue button pressed
-      if(!digitalRead(BUTTON_BLUE))
+    switch (sequence[sequenceIndex].ledColor){
+      case LED_BLUE:
       {
-            #if DEBUGMODE
-            Serial.println("Blue pressed!");
-            #endif
-            digitalWrite(LED_BLUE, HIGH);
-            tone(BUZZER, BLUE_TONE, 500);
-            // Delay a bit in order to wait for pin (button) state set to HIGH again
-            delay(250);
-            digitalWrite(LED_BLUE, LOW);
-      } 
-      if(!digitalRead(BUTTON_GREEN) || !digitalRead(BUTTON_RED) || !digitalRead(BUTTON_YELLOW))
+        // Blue button pressed
+        if(!digitalRead(BUTTON_BLUE))
+        {            
+              #if DEBUGMODE
+              Serial.println("Blue pressed!");
+              #endif
+              digitalWrite(LED_BLUE, HIGH);
+              while(!digitalRead(BUTTON_BLUE))
+              {
+                tone(BUZZER, BLUE_TONE);
+              }
+              noTone(BUZZER);
+              digitalWrite(LED_BLUE, LOW);
+        } 
+        else if(!digitalRead(BUTTON_GREEN) || !digitalRead(BUTTON_RED) || !digitalRead(BUTTON_YELLOW))
+        {
+          #if DEBUGMODE
+          Serial.println("Other pressed! Blue...");
+          #endif
+          playMissSound();
+          return false;
+        }
+        break;      
+      }
+      case LED_GREEN:
       {
-        #if DEBUGMODE
-        Serial.println("Other pressed! Blue...");
-        #endif
-        playMissSound();
-        return false;
-      }      
-    }
-    if(sequence[sequenceIndex].ledColor == LED_GREEN)
-    {
-      // Green button pressed
-      if(!digitalRead(BUTTON_GREEN))
+        // Green button pressed
+        if(!digitalRead(BUTTON_GREEN))
+        {
+              #if DEBUGMODE
+              Serial.println("Green pressed!");
+              #endif
+              digitalWrite(LED_GREEN, HIGH);
+              while(!digitalRead(BUTTON_GREEN))
+              {
+                tone(BUZZER, GREEN_TONE);
+              }
+              noTone(BUZZER);
+              digitalWrite(LED_GREEN, LOW);
+        } 
+        else if(!digitalRead(BUTTON_BLUE) || !digitalRead(BUTTON_RED) || !digitalRead(BUTTON_YELLOW))
+        {
+          #if DEBUGMODE
+          Serial.println("Other pressed! Green...");
+          #endif
+          playMissSound();
+          return false;
+        }
+        break;      
+      }
+      case LED_RED:
       {
-            #if DEBUGMODE
-            Serial.println("Green pressed!");
-            #endif
-            digitalWrite(LED_GREEN, HIGH);
-            tone(BUZZER, GREEN_TONE, 500);
-            // Delay a bit in order to wait for pin (button) state set to HIGH again
-            delay(250);
-            digitalWrite(LED_GREEN, LOW);
-      } 
-      if(!digitalRead(BUTTON_BLUE) || !digitalRead(BUTTON_RED) || !digitalRead(BUTTON_YELLOW))
+        // Green button pressed
+        if(!digitalRead(BUTTON_RED))
+        {
+              #if DEBUGMODE
+              Serial.println("Red pressed!");
+              #endif
+              digitalWrite(LED_RED, HIGH);
+              while(!digitalRead(BUTTON_RED))
+              {
+                tone(BUZZER, RED_TONE);
+              }
+              noTone(BUZZER);
+              digitalWrite(LED_RED, LOW);
+        } 
+        else if(!digitalRead(BUTTON_BLUE) || !digitalRead(BUTTON_GREEN) || !digitalRead(BUTTON_YELLOW))
+        {
+          #if DEBUGMODE
+          Serial.println("Other pressed! Red...");
+          #endif
+          playMissSound();
+          return false;
+        }
+        break;      
+      }
+      case LED_YELLOW:
       {
-        #if DEBUGMODE
-        Serial.println("Other pressed! Green...");
-        #endif
-        playMissSound();
-        return false;
-      }      
-    }
-    if(sequence[sequenceIndex].ledColor == LED_RED)
-    {
-      // Green button pressed
-      if(!digitalRead(BUTTON_RED))
-      {
-            #if DEBUGMODE
-            Serial.println("Red pressed!");
-            #endif
-            digitalWrite(LED_RED, HIGH);
-            tone(BUZZER, RED_TONE, 500);
-            // Delay a bit in order to wait for pin (button) state set to HIGH again
-            delay(250);
-            digitalWrite(LED_RED, LOW);
-      } 
-      if(!digitalRead(BUTTON_BLUE) || !digitalRead(BUTTON_GREEN) || !digitalRead(BUTTON_YELLOW))
-      {
-        #if DEBUGMODE
-        Serial.println("Other pressed! Red...");
-        #endif
-        playMissSound();
-        return false;
-      }      
-    }
-    if(sequence[sequenceIndex].ledColor == LED_YELLOW)
-    {
-      // Green button pressed
-      if(!digitalRead(BUTTON_YELLOW))
-      {
-            #if DEBUGMODE
-            Serial.println("Yellow pressed!");
-            #endif
-            digitalWrite(LED_YELLOW, HIGH);
-            tone(BUZZER, YELLOW_TONE, 500);
-            // Delay a bit in order to wait for pin (button) state set to HIGH again
-            delay(250);
-            digitalWrite(LED_YELLOW, LOW);
-      } 
-      if(!digitalRead(BUTTON_BLUE) || !digitalRead(BUTTON_GREEN) || !digitalRead(BUTTON_RED))
-      {
-        #if DEBUGMODE
-        Serial.println("Other pressed! Yellow...");
-        #endif
-        playMissSound();
-        return false;
-      }      
-    }
-        
-  }
-  delay(1000);
+        // Green button pressed
+        if(!digitalRead(BUTTON_YELLOW))
+        {
+              #if DEBUGMODE
+              Serial.println("Yellow pressed!");
+              #endif
+              digitalWrite(LED_YELLOW, HIGH);
+              while(!digitalRead(BUTTON_YELLOW))
+              {
+                tone(BUZZER, YELLOW_TONE);
+              }
+              noTone(BUZZER);
+              digitalWrite(LED_YELLOW, LOW);
+        } 
+        else if(!digitalRead(BUTTON_BLUE) || !digitalRead(BUTTON_GREEN) || !digitalRead(BUTTON_RED))
+        {
+          #if DEBUGMODE
+          Serial.println("Other pressed! Yellow...");
+          #endif
+          playMissSound();
+          return false;
+        }
+        break;      
+      }
+    }        
+  }   
+  delay(500);
   // Sequence completed without errors
   return true;
 }
