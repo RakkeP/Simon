@@ -223,9 +223,6 @@ void playSequence(struct soundItem* sequence){
       {
         // turn the correct LED on and the rest off. 
         digitalWrite(LED_BLUE, HIGH); 
-        digitalWrite(LED_GREEN, LOW);
-        digitalWrite(LED_RED, LOW);
-        digitalWrite(LED_YELLOW, LOW);
         
         tone(BUZZER, BLUE_TONE, sequence[soundIndex].noteLength);
         delay(sequence[soundIndex].noteLength);
@@ -236,10 +233,7 @@ void playSequence(struct soundItem* sequence){
       case LED_GREEN:
       {
         // turn the correct LED on and the rest off. 
-        digitalWrite(LED_BLUE, LOW); 
         digitalWrite(LED_GREEN, HIGH);
-        digitalWrite(LED_RED, LOW);
-        digitalWrite(LED_YELLOW, LOW);
         
         tone(BUZZER, GREEN_TONE, sequence[soundIndex].noteLength);
         delay(sequence[soundIndex].noteLength);
@@ -250,10 +244,7 @@ void playSequence(struct soundItem* sequence){
       case LED_RED:
       {
         // turn the correct LED on and the rest off. 
-        digitalWrite(LED_BLUE, LOW); 
-        digitalWrite(LED_GREEN, LOW);
         digitalWrite(LED_RED, HIGH);
-        digitalWrite(LED_YELLOW, LOW);
         
         tone(BUZZER, RED_TONE, sequence[soundIndex].noteLength);
         delay(sequence[soundIndex].noteLength);
@@ -264,9 +255,6 @@ void playSequence(struct soundItem* sequence){
       case LED_YELLOW:
       {
         // turn the correct LED on and the rest off. 
-        digitalWrite(LED_BLUE, LOW); 
-        digitalWrite(LED_GREEN, LOW);
-        digitalWrite(LED_RED, LOW);
         digitalWrite(LED_YELLOW, HIGH);
         
         tone(BUZZER, YELLOW_TONE, sequence[soundIndex].noteLength);
